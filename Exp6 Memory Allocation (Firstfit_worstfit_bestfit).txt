@@ -1,0 +1,166 @@
+Experiment 6 – Memory Allocation (First Fit, Best Fit, Worst Fit)
+#include <iostream>
+using namespace std;
+
+// FIRST FIT
+void firstFit(int blockSize[], int m, int processSize[], int n) {
+    int allocation[n];
+
+    for(int i = 0; i < n; i++)
+        allocation[i] = -1;
+
+    for(int i = 0; i < n; i++) {
+        for(int j = 0; j < m; j++) {
+            if(blockSize[j] >= processSize[i]) {
+                allocation[i] = j;
+                blockSize[j] -= processSize[i];
+                break;
+            }
+        }
+    }
+
+    cout << "\nFirst Fit Allocation:\n";
+    for(int i = 0; i < n; i++) {
+        if(allocation[i] != -1)
+            cout << "Process " << i+1 << " -> Block " << allocation[i] << endl;
+        else
+            cout << "Process " << i+1 << " -> Not Allocated\n";
+    }
+}
+
+// BEST FIT
+void bestFit(int blockSize[], int m, int processSize[], int n) {
+    int allocation[n];
+
+    for(int i = 0; i < n; i++)
+        allocation[i] = -1;
+
+    for(int i = 0; i < n; i++) {
+        int bestIndex = -1;
+
+        for(int j = 0; j < m; j++) {
+            if(blockSize[j] >= processSize[i]) {
+                if(bestIndex == -1 || blockSize[j] < blockSize[bestIndex])
+                    bestIndex = j;
+            }
+        }
+
+        if(bestIndex != -1) {
+            allocation[i] = bestIndex;
+            blockSize[bestIndex] -= processSize[i];
+        }
+    }
+
+    cout << "\nBest Fit Allocation:\n";
+}
+
+// WORST FIT
+void worstFit(int blockSize[], int m, int processSize[], int n) {
+    int allocation[n];
+
+    for(int i = 0; i < n; i++)
+        allocation[i] = -1;
+
+    for(int i = 0; i < n; i++) {
+        int worstIndex = -1;
+
+        for(int j = 0; j < m; j++) {
+            if(blockSize[j] >= processSize[i]) {
+                if(worstIndex == -1 || blockSize[j] > blockSize[worstIndex])
+                    worstIndex = j;
+            }
+        }
+
+        if(worstIndex != -1) {
+            allocation[i] = worstIndex;
+            blockSize[worstIndex] -= processSize[i];
+        }
+    }
+
+    cout << "\nWorst Fit Allocation:\n";
+    for(int i = 0; i < n; i++)
+    {
+        if(allocation[i] != -1)
+            cout << "Process " << i+1
+                 << " -> Block " << allocation[i] + 1 << endl;
+        else
+            cout << "Process " << i+1
+                 << " -> Not Allocated\n";
+    }
+}
+
+
+// ================== NEXT FIT ==================
+void nextFit(int blockSize[], int m, int processSize[], int n)
+{
+    int allocation[n]; // store allocation result
+    int lastIndex = 0; // pointer to remember last allocated block
+
+    // initialize
+    for(int i = 0; i < n; i++)
+        allocation[i] = -1;
+
+    // process each process
+    for(int i = 0; i < n; i++)
+    {
+        int count = 0; // to prevent infinite loop
+
+        // check blocks in circular manner
+        while(count < m)
+        {
+            // if block can fit process
+            if(blockSize[lastIndex] >= processSize[i])
+            {
+                allocation[i] = lastIndex; // assign block
+                blockSize[lastIndex] -= processSize[i]; // reduce size
+                break; // allocation done
+            }
+
+            // move to next block (circular movement)
+            lastIndex = (lastIndex + 1) % m;
+
+            count++; // increase count
+        }
+    }
+
+    // print result
+    cout << "\nNext Fit Allocation:\n";
+
+    for(int i = 0; i < n; i++)
+    {
+        if(allocation[i] != -1)
+            cout << "Process " << i+1
+                 << " -> Block " << allocation[i] + 1 << endl;
+        else
+            cout << "Process " << i+1
+                 << " -> Not Allocated\n";
+    }
+}
+
+
+// ================== MAIN FUNCTION ==================
+int main()
+{
+    // define memory blocks for each algorithm separately
+    int block1[] = {100, 500, 200, 300, 600}; // for first fit
+    int block2[] = {100, 500, 200, 300, 600}; // for best fit
+    int block3[] = {100, 500, 200, 300, 600}; // for worst fit
+    int block4[] = {100, 500, 200, 300, 600}; // for next fit
+
+    // define process sizes
+    int processSize[] = {212, 417, 112, 426};
+
+    int m = 5; // number of memory blocks
+    int n = 4; // number of processes
+
+    // call each algorithm function
+    firstFit(block1, m, processSize, n);
+
+    bestFit(block2, m, processSize, n);
+
+    worstFit(block3, m, processSize, n);
+
+    nextFit(block4, m, processSize, n);
+
+    return 0; // end program
+}

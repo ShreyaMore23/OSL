@@ -1,0 +1,27 @@
+#!/bin/bash
+
+echo "OPERATING SYSTEM DETAILS"
+
+echo "Operating System Name:"
+uname -o
+
+echo "Kernel Release:"
+uname -r
+
+echo "Kernel Version:"
+uname -v
+
+echo "TOP 10 CPU CONSUMING PROCESSES"
+ps -eo pid,ppid,cmd,%cpu --sort=-%cpu | head -n 11
+
+echo "TOP 10 MEMORY CONSUMING PROCESSES"
+ps -eo pid,ppid,cmd,%mem --sort=-%mem | head -n 11
+
+echo "USER LOGIN INFORMATION"
+echo "Current logged in user:"
+whoami
+
+echo "Login name:"
+logname
+
+echo "Script execution completed!"

@@ -1,0 +1,48 @@
+ Priority Scheduling(Preemptive)
+#include <iostream>
+using namespace std;
+
+int main() {
+    int n;
+    cin >> n;
+
+    int at[n], bt[n], pr[n], rt[n];
+    int ct[n], tat[n], wt[n];
+
+    for(int i = 0; i < n; i++) {
+        cin >> at[i] >> bt[i] >> pr[i];
+        rt[i] = bt[i];
+    }
+
+    int time = 0, completed = 0;
+
+    while(completed < n) {
+        int idx = -1;
+        int highestPriority = 9999;
+
+        for(int i = 0; i < n; i++) {
+            if(at[i] <= time && rt[i] > 0) {
+                if(pr[i] < highestPriority) {
+                    highestPriority = pr[i];
+                    idx = i;
+                }
+            }
+        }
+
+        if(idx != -1) {
+            rt[idx]--;
+            time++;
+
+            if(rt[idx] == 0) {
+                completed++;
+                ct[idx] = time;
+                tat[idx] = ct[idx] - at[idx];
+                wt[idx] = tat[idx] - bt[idx];
+            }
+        } else {
+            time++;
+        }
+    }
+
+    return 0;
+}
